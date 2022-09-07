@@ -40,6 +40,7 @@ template = Environment(
 message = template.render(
     metadata_json=metadata,
     file_name="terraform.tfplan",
+    file_name="infra_cost_result"
     terraform_output=tf_plan
 )
 

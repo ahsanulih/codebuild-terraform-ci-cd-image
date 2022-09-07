@@ -1,0 +1,8 @@
+{
+    "postgres": "PostgreSQL",
+    "mysql": "MySQL",
+    "mariadb": "MariaDB",
+    "sqlserver-ee": "Microsoft SQL Server",
+    "oracle-ee": "Oracle",
+    "aurora": "Aurora"
+}

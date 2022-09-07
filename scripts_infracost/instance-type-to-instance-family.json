@@ -1,0 +1,10 @@
+{
+    "t": "General purpose",
+    "m": "General purpose",
+    "c": "Compute optimized",
+    "x": "Memory optimized",
+    "p": "Memory otimized",
+    "h": "Accelerated computing",
+    "i": "Storage optimized",
+    "d": "Storage optimized"
+}

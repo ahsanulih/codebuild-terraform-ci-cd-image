@@ -37,3 +37,4 @@ RUN tfenv install 0.11.15 &&\
 VOLUME /var/lib/docker
 
 COPY scripts/ /usr/local/bin/
+COPY scripts_infracost/ /usr/local/bin/
