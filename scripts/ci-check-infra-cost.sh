@@ -10,14 +10,12 @@ then
   printf "%s\n" "------------------------------------------------------------------------" > infra_cost_result
   printf "%s\n" "This is a stack module directory" >> infra_cost_result
   printf "%s\n" "------------------------------------------------------------------------" >> infra_cost_result
-  cd scripts || exit
-  python infra_cost_find_cost_asg.py ../"$result"-plan.json >> ../infra_cost_result
-  python infra_cost_find_cost_alb.py ../"$result"-plan.json >> ../infra_cost_result
+  python /usr/local/bin/infra_cost_find_cost_asg.py "$result"-plan.json >> infra_cost_result
+  python /usr/local/bin/infra_cost_find_cost_alb.py "$result"-plan.json >> infra_cost_result
 elif [ "${result: -8}" = "postgres" ]
 then
   printf "%s\n" "------------------------------------------------------------------------" > infra_cost_result
   printf "%s\n" "This is a postgres directory" >> infra_cost_result
   printf "%s\n" "------------------------------------------------------------------------" >> infra_cost_result
-  cd scripts || exit
-  python infra_cost_find_cost_rds.py ../"$result"-plan.json >> ../infra_cost_result
+  python /usr/local/bin/infra_cost_find_cost_rds.py "$result"-plan.json >> infra_cost_result
 fi
