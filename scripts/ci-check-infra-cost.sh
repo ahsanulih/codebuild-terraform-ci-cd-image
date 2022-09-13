@@ -4,6 +4,7 @@ result=${result:-/}        # to correct for the case where PWD=/
 
 terraform plan -out "$result"-plan 
 terraform show -json "$result"-plan > "$result"-plan.json
+cat /usr/local/bin/"$result"-plan.json
 pwd
 ls -la
 
@@ -21,3 +22,6 @@ then
   printf "%s\n" "------------------------------------------------------------------------" >> infra_cost_result
   python3 /usr/local/bin/infra_cost_find_cost_rds.py "$result"-plan.json >> infra_cost_result
 fi
+
+ls -la
+cat infra_cost_result

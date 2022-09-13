@@ -28,7 +28,9 @@ if not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/terraform.tfplan"):
 # from terraform configuration or .terraform-version file
 with cwd(os.getenv('TF_WORKING_DIR')):
     command = os.popen('terraform show terraform.tfplan -no-color')
+    command_infracost = os.popen('cat infra_cost_result')
     tf_plan = command.read()
+    infra_cost_result = command_infracost.read()
     command.close()
 
 f = open("artifact/metadata.json", "r")
@@ -40,8 +42,9 @@ template = Environment(
 message = template.render(
     metadata_json=metadata,
     file_name="terraform.tfplan",
-    file_name2="infra_cost_result",
-    terraform_output=tf_plan
+    infra_cost_file_name="infra_cost_result",
+    terraform_output=tf_plan,
+    infra_cost_output=infra_cost_result
 )
 
 gh.send_pr_comment(payload=message)
