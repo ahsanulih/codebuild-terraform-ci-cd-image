@@ -28,23 +28,36 @@ if not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/terraform.tfplan"):
 # from terraform configuration or .terraform-version file
 with cwd(os.getenv('TF_WORKING_DIR')):
     command = os.popen('terraform show terraform.tfplan -no-color')
-    command_infracost = os.popen('cat infra_cost_result')
     tf_plan = command.read()
-    infra_cost_result = command_infracost.read()
     command.close()
 
 f = open("artifact/metadata.json", "r")
 metadata = f.read()
 
-template = Environment(
-    loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
-).get_template("terraform_output.j2")
-message = template.render(
-    metadata_json=metadata,
-    file_name="terraform.tfplan",
-    infra_cost_file_name="infra_cost_result",
-    terraform_output=tf_plan,
-    infra_cost_output=infra_cost_result
-)
+if not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/infra_cost_result"):
+    print("infra_cost_result not found. Skipping this step")
+    template = Environment(
+        loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
+    ).get_template("terraform_output.j2")
+    message = template.render(
+        metadata_json=metadata,
+        file_name="terraform.tfplan",
+        terraform_output=tf_plan,
+    )
+else:
+    with cwd(os.getenv('TF_WORKING_DIR')):
+        command_infracost = os.popen('cat infra_cost_result')
+        infra_cost_result = command_infracost.read()
+        command.close()
+    template = Environment(
+        loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
+    ).get_template("terraform_output_with_infra_cost.j2")
+    message = template.render(
+        metadata_json=metadata,
+        file_name="terraform.tfplan",
+        infra_cost_file_name="infra_cost_result",
+        terraform_output=tf_plan,
+        infra_cost_output=infra_cost_result
+    )
 
 gh.send_pr_comment(payload=message)

@@ -18,7 +18,6 @@ if [ "$TF_WORKING_DIR" != "" ]; then
     cd $TF_WORKING_DIR
     terraform init -no-color 2> /tmp/errMsg.log
     terraform plan -out=terraform.tfplan -no-color 2> /tmp/errMsg.log
-    ls -la
     /bin/bash /usr/local/bin/ci-check-infra-cost.sh
     cd -
 fi
