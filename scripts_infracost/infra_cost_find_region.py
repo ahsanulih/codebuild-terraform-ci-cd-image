@@ -2,7 +2,7 @@
 
 import json
 
-with open("region-id-to-name.json", encoding="utf-8") as file:
+with open("/usr/local/bin/region-id-to-name.json", encoding="utf-8") as file:
     region_id_to_name_obj = json.load(file)
 
 def find_region(obj):

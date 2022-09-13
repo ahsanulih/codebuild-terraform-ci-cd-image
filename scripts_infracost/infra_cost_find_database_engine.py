@@ -2,7 +2,7 @@
 
 import json
 
-with open("database-engine.json", encoding="utf-8") as file:
+with open("/usr/local/bin/database-engine.json", encoding="utf-8") as file:
     database_engine_obj = json.load(file)
 
 def find_engine(engine):
