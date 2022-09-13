@@ -4,6 +4,8 @@ result=${result:-/}        # to correct for the case where PWD=/
 
 terraform plan -out "$result"-plan 
 terraform show -json "$result"-plan > "$result"-plan.json
+pwd
+ls -la
 
 if [ "${result: -3}" = "app" ]
 then
