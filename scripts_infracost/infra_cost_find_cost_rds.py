@@ -29,6 +29,7 @@ def find_rds_prices(obj):
     multi_az = find_values('multi_az', obj['planned_values'])[0]
     allocated_storage = find_values('allocated_storage', obj['planned_values'])[0]
     storage_per_gb_cost = 0.138 # Temporarily hardcoded because AWS pricing API doesn't provide this data
+    # will use bulk JSON price list(https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/using-ppslong.html)
     print("Service : RDS")
     print("Region  : " + location)
     response = pricing.get_products(

@@ -17,7 +17,6 @@ def find_region(obj):
     except:
         region_id = obj['configuration']['provider_config']['aws'][
         'expressions']['region']['constant_value']
-    
     region_name = region_id_to_name_obj[region_id]
     return region_name
     

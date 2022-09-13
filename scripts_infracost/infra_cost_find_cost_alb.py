@@ -20,6 +20,7 @@ def find_alb_cost(obj):
     location = find_region(obj)
     lb_type = find_values('load_balancer_type', obj['planned_values'])[0]
     lb_price_per_hour = 0.0252 #Temporarily Hardcoded because AWS pricing API doesn't provide this data
+    # will use bulk JSON price list(https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/using-ppslong.html)
     lb_price_per_month = lb_price_per_hour * 720
     traffic_cost_per_month = 0 #ToDo
     total_price_per_month = lb_price_per_month + traffic_cost_per_month
