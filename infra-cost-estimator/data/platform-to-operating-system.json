@@ -1,0 +1,19 @@
+{
+    "Linux/UNIX": "Linux",
+    "Red Hat Enterprise Linux": "RHEL",
+    "SUSE Linux": "SUSE",
+    "Windows": "Windows",
+    "Windows with SQL Server": "Windows",
+    "Windows with SQL Server Enterprise": "Windows",
+    "Windows with SQL Server Standard": "Windows",
+    "Windows with SQL Server Web": "Windows",
+    "Linux with SQL Server Standard": "Linux",
+    "Linux with SQL Server Web": "Linux",
+    "Linux with SQL Server Enterprise": "Linux",
+    "RHEL with SQL Server Standard": "RHEL",
+    "RHEL with SQL Server Enterprise": "RHEL",
+    "RHEL with SQL Server Web": "RHEL",
+    "RHEL with HA": "RHEL",
+    "RHEL with HA and SQL Server Standard": "RHEL",
+    "RHEL with HA and SQL Server Enterprise": "RHEL"
+}

@@ -2,8 +2,9 @@
 
 import json
 
-with open("/usr/local/bin/database-engine.json", encoding="utf-8") as file:
+with open("/usr/local/bin/infra-cost-estimator/data/database-engine.json", encoding="utf-8") as file:
     database_engine_obj = json.load(file)
+
 
 def find_engine(engine):
     """
