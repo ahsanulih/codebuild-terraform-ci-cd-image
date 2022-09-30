@@ -92,9 +92,9 @@ for address in addresses:
 
     fields_1 = [' ', ' ', ' ', ' ']
     fields_2 = [address, ' ', ' ', ' ']
-    fields_3 = ['├── Data ingested', 'Depends on usage', f'{cwl_data_ingested_cost[0]}', f'{cwl_data_ingested_cost[1]}']
-    fields_4 = ['├── Archival storage', 'Depends on usage', f'{cwl_archival_storage_cost[0]}', f'{cwl_archival_storage_cost[1]}']
-    fields_5 = ['└── Insights queries data scanned', 'Depends on usage', f'{cwl_insight_queries_data_scanned_cost[0]}', f'{cwl_insight_queries_data_scanned_cost[1]}']
+    fields_3 = ['├── Data ingested', 'Depends on usage', f'{cwl_data_ingested_cost[0]}', f'${cwl_data_ingested_cost[1]}']
+    fields_4 = ['├── Archival storage', 'Depends on usage', f'{cwl_archival_storage_cost[0]}', f'${cwl_archival_storage_cost[1]}']
+    fields_5 = ['└── Insights queries data scanned', 'Depends on usage', f'{cwl_insight_queries_data_scanned_cost[0]}', f'${cwl_insight_queries_data_scanned_cost[1]}']
 
     with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
