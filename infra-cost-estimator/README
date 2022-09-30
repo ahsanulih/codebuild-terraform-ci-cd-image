@@ -10,7 +10,7 @@ Goals:
 - [x] Get stack module’s ASG cost from abcxyz-app folder
 - [x] Get stack module’s EBS cost 
 - [x] Get stack module's ALB and LCU cost
-- [ ] Get stack module's CloudWatch log group cost 
+- [x] Get stack module's CloudWatch log group cost 
 - [x] Get RDS instance cost from abcxyz-postgres folder
 - [x] Get RDS storage cost 
 - [x] Integrate with Terraform CI-CD

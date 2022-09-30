@@ -1,7 +1,7 @@
 def find_values_from_key(target_key, obj):
     """
     Function to search values of specific key in a JSON object.
-    It has 2 parameter: target (string) that we want to search, and obj which is a JSON object.
+    It has 2 parameters: target (string) that we want to search, and obj which is a JSON object.
     Return list of found value.
     """
 
@@ -32,7 +32,7 @@ def find_values_from_key(target_key, obj):
 def find_values_containing_substring(target_key, substring, obj):
     """
     Function to search values containing substring in a JSON object.
-    It has 2 parameter: target (string) that we want to search, and obj which is a JSON object.
+    It has 3 parameters: target_key (string), substring that we want to search, and obj which is a JSON object.
     Return list of found value.
     """
 

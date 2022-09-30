@@ -9,6 +9,7 @@ if [ "${result: -3}" = "app" ]; then
     printf "%s\n" "This is a stack module directory" >infra_cost_result
     python3 /usr/local/bin/infra-cost-estimator/scripts/find_cost_asg.py "$result"-plan.json >>infra_cost_result
     python3 /usr/local/bin/infra-cost-estimator/scripts/find_cost_alb.py "$result"-plan.json >>infra_cost_result
+    python3 /usr/local/bin/infra-cost-estimator/scripts/find_cost_cw_log_group.py "$result"-plan.json >>infra_cost_result
 elif [ "${result: -8}" = "postgres" ]; then
     printf "%s\n" "This is a postgres directory" >infra_cost_result
     python3 /usr/local/bin/infra-cost-estimator/scripts/find_cost_rds.py "$result"-plan.json >>infra_cost_result

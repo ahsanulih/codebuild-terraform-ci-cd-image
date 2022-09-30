@@ -69,7 +69,7 @@ lcu_cost = find_lcu_cost(file_obj)
 fields_1 = [' ', ' ', ' ', ' ']
 fields_2 = [address, ' ', ' ', ' ']
 fields_3 = ['├── Application Load Balancer', 720, f'{alb_cost[0]}', f'${alb_cost[2]}']
-fields_4 = ['└── Load balancer capacity unit', 'Depends on usage', f'{alb_cost[0]}', f'${lcu_cost[1]}']
+fields_4 = ['└── Load balancer capacity unit', 'Depends on usage', f'{lcu_cost[0]}', f'${lcu_cost[1]}']
 
 with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as f:
     writer = csv.writer(f)
