@@ -27,7 +27,7 @@ def find_asg_cost(obj):
     except:
         operating_system = 'Linux'
 
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
     instance_type = find_values_from_key('instance_type', obj['planned_values']['root_module']['child_modules'])[0]
     instance_family = find_instance_family(instance_type)
     market_option = 'OnDemand'
@@ -67,7 +67,7 @@ def find_ebs_cost(obj):
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
 
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
     volume_api_name = find_values_from_key('volume_type', obj['planned_values']['root_module']['child_modules'])[0]
     volume_size = find_values_from_key('volume_size', obj['planned_values']['root_module']['child_modules'])[0]
 

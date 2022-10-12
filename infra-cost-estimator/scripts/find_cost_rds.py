@@ -19,7 +19,7 @@ def find_rds_instance_cost(obj):
 
     pricing = boto3.client('pricing', region_name='us-east-1')
 
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
     instance_type = find_values_from_key('instance_class', obj['planned_values'])[0]
     instance_family = find_instance_family(instance_type[3:])
     engine = find_values_from_key('engine', obj['planned_values'])[0]
@@ -56,7 +56,7 @@ def find_rds_storage_cost(obj):
 
     pricing = boto3.client('pricing', region_name='us-east-1')
 
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
     engine = find_values_from_key('engine', obj['planned_values'])[0]
     database_engine = find_engine(engine)
     multi_az = find_values_from_key('multi_az', obj['planned_values'])[0]

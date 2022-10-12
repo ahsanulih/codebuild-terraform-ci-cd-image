@@ -15,7 +15,7 @@ def find_alb_cost(obj):
     Return unit, hourly_alb_price, monthly_alb_price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
     response = pricing.get_products(
         ServiceCode='AWSELB',
         Filters=[
@@ -40,7 +40,7 @@ def find_lcu_cost(obj):
     Return unit, hourly_lcu_price, monthly_lcu_price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
     response = pricing.get_products(
         ServiceCode='AWSELB',
         Filters=[

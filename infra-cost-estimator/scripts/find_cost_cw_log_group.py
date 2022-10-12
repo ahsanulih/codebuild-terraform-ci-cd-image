@@ -15,7 +15,7 @@ def find_cwl_data_ingested_cost(obj):
     Return unit, price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
 
     response = pricing.get_products(
         ServiceCode='AmazonCloudwatch',
@@ -39,7 +39,7 @@ def find_cwl_archival_storage_cost(obj):
     Return unit, price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
 
     response = pricing.get_products(
         ServiceCode='AmazonCloudwatch',
@@ -62,7 +62,7 @@ def find_cwl_insight_queries_data_scanned_cost(obj):
     Return unit, price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
-    region_id = find_region(obj)[0]
+    region_id = find_region(obj)
 
     response = pricing.get_products(
         ServiceCode='AmazonCloudwatch',
