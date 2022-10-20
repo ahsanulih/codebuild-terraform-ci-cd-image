@@ -1,4 +1,4 @@
-"""Get ASG's instances and EBS storage cost"""
+"""Get EC2 and EBS storage cost"""
 import csv
 import json
 import boto3
@@ -9,11 +9,11 @@ from find_region import find_region
 from find_values import find_values_from_key, find_values_containing_substring
 
 
-def find_asg_cost(obj):
+def find_ec2_cost(obj):
     """
-    Function to get ASG cost.
+    Function to get EC2 cost.
     Receive 1 terraform plan json object as parameter.
-    Return operating_system, market_option, instance_type, asg_min_size, asg_max_size, asg_unit, lower_bound, upper_bound, range_price_per_month
+    Return operating_system, market_option, instance_type, ec2_unit, monthly_ec2_price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
     ec2 = boto3.client('ec2')
@@ -31,8 +31,6 @@ def find_asg_cost(obj):
     instance_family = find_instance_family(instance_type)
     market_option = 'OnDemand'
     pre_installed_sw = 'NA'
-    asg_max_size = find_values_from_key('max_size', obj)[0]
-    asg_min_size = find_values_from_key('min_size', obj)[0]
 
     response = pricing.get_products(
         ServiceCode='AmazonEC2',
@@ -48,14 +46,10 @@ def find_asg_cost(obj):
         MaxResults=1
     )
 
-    asg_unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
+    ec2_unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
     hourly_ec2_price = float(find_values_from_key('pricePerUnit', json.loads(response['PriceList'][0]))[0]['USD'])
     monthly_ec2_price = hourly_ec2_price * 720
-
-    lower_bound = float(asg_min_size) * monthly_ec2_price
-    upper_bound = float(asg_max_size) * monthly_ec2_price
-    range_price_per_month = f"{lower_bound:.2f} ~ {upper_bound:.2f}"
-    return operating_system, market_option, instance_type, asg_min_size, asg_max_size, asg_unit, lower_bound, upper_bound, range_price_per_month
+    return operating_system, market_option, instance_type, ec2_unit, monthly_ec2_price
 
 
 def find_ebs_cost(obj):
@@ -87,18 +81,18 @@ def find_ebs_cost(obj):
 
     return volume_type, volume_api_name, volume_size, ebs_unit, monthly_ebs_price
 
-def calculate_asg_and_ebs(address_param, file_obj):
+def calculate_ec2_and_ebs(address_param, file_obj):
     """
-    Calculate ASG cost, EBS cost, and then write to data.csv
+    Calculate EC2 cost, EBS cost, and then write to data.csv
     """
     address = find_values_containing_substring("address", address_param, file_obj)[0]
-    operating_system, market_option, instance_type, asg_min_size, asg_max_size, asg_unit, lower_bound, upper_bound, range_price_per_month = find_asg_cost(file_obj)
+    operating_system, market_option, instance_type, ec2_unit, monthly_ec2_price = find_ec2_cost(file_obj)
     volume_type, volume_api_name, volume_size, ebs_unit, monthly_ebs_price = find_ebs_cost(file_obj)
 
     fields = [
         [' ', ' ', ' ', ' '],
         [address, ' ', ' ', ' '],
-        [f'├── Instance usage ({operating_system}, {market_option}, {instance_type})', 720, f'{asg_unit}', f'${range_price_per_month}'],
+        [f'├── Instance usage ({operating_system}, {market_option}, {instance_type})', 720, f'{ec2_unit}', f'${monthly_ec2_price}'],
         [f'└── Storage ({volume_type}, {volume_api_name})', f'{volume_size}', f'{ebs_unit}', f'${monthly_ebs_price}']
     ]
 
@@ -107,4 +101,4 @@ def calculate_asg_and_ebs(address_param, file_obj):
         for field in fields:
             writer.writerow(field)
 
-    return float(lower_bound) + float(monthly_ebs_price)
+    return float(monthly_ec2_price) + float(monthly_ebs_price)

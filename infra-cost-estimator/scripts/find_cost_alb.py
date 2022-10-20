@@ -1,7 +1,6 @@
 """Get ALB and LCU cost"""
 import csv
 import json
-import sys
 import boto3
 
 from find_region import find_region
@@ -12,7 +11,7 @@ def find_alb_cost(obj):
     """
     Function to get ALB cost.
     Receive 1 terraform plan json object as parameter.
-    Return unit, hourly_alb_price, monthly_alb_price
+    Return alb_unit, hourly_alb_price, monthly_alb_price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
     region_id = find_region(obj)
@@ -26,18 +25,17 @@ def find_alb_cost(obj):
         MaxResults=1
     )
 
-    unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
+    alb_unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
     hourly_alb_price = float(find_values_from_key('pricePerUnit', json.loads(response['PriceList'][0]))[0]['USD'])
-    monthly_alb_price = hourly_alb_price * 720
-    monthly_alb_price = f'{monthly_alb_price:.2f}'
-    return unit, hourly_alb_price, monthly_alb_price
+    monthly_alb_price = f'{(hourly_alb_price * 720):.2f}'
+    return alb_unit, hourly_alb_price, monthly_alb_price
 
 
 def find_lcu_cost(obj):
     """
     Function to get LCU cost.
     Receive 1 terraform plan json object as parameter.
-    Return unit, hourly_lcu_price, monthly_lcu_price
+    Return lcu_unit, hourly_lcu_price, monthly_lcu_price
     """
     pricing = boto3.client('pricing', region_name='us-east-1')
     region_id = find_region(obj)
@@ -51,29 +49,30 @@ def find_lcu_cost(obj):
         MaxResults=1
     )
 
-    unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
+    lcu_unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
     hourly_lcu_price = float(find_values_from_key('pricePerUnit', json.loads(response['PriceList'][0]))[0]['USD'])
-    monthly_lcu_price = hourly_lcu_price * 720
-    monthly_lcu_price = f'{monthly_lcu_price:.2f}'
-    return unit, hourly_lcu_price, monthly_lcu_price
+    monthly_lcu_price = f'{(hourly_lcu_price * 720):.2f}'
+    return lcu_unit, hourly_lcu_price, monthly_lcu_price
 
 
-# Open xxxxxx-app-plan.json file and create obj dictionary
-with open(sys.argv[1], encoding="utf-8") as file:
-    file_obj = json.load(file)
+def calculate_alb_and_lcu(address_param, file_obj):
+    """
+    Calculate ALB cost, LCU cost, and then write to data.csv
+    """
+    address = find_values_containing_substring("address", address_param, file_obj)[0]
+    alb_unit, hourly_alb_price, monthly_alb_price = find_alb_cost(file_obj)
+    lcu_unit, hourly_lcu_price, monthly_lcu_price = find_lcu_cost(file_obj)
 
-address = find_values_containing_substring("address", ".aws_lb.", file_obj)[0]
-alb_cost = find_alb_cost(file_obj)
-lcu_cost = find_lcu_cost(file_obj)
+    fields = [
+        [' ', ' ', ' ', ' '],
+        [address, ' ', ' ', ' '],
+        ['├── Application Load Balancer', 720, alb_unit, f'${monthly_alb_price}'],
+        ['└── Load balancer capacity unit', 'Depends on usage', lcu_unit, f'${hourly_lcu_price}']
+    ]
 
-fields_1 = [' ', ' ', ' ', ' ']
-fields_2 = [address, ' ', ' ', ' ']
-fields_3 = ['├── Application Load Balancer', 720, f'{alb_cost[0]}', f'${alb_cost[2]}']
-fields_4 = ['└── Load balancer capacity unit', 'Depends on usage', f'{lcu_cost[0]}', f'${lcu_cost[1]}']
+    with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as file:
+        writer = csv.writer(file)
+        for field in fields:
+            writer.writerow(field)
 
-with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as f:
-    writer = csv.writer(f)
-    writer.writerow(fields_1)
-    writer.writerow(fields_2)
-    writer.writerow(fields_3)
-    writer.writerow(fields_4)
+    return float(monthly_alb_price)

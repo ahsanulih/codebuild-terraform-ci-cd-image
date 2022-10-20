@@ -1,7 +1,6 @@
 """Get RDS's instance and storage cost"""
 import csv
 import json
-import sys
 import boto3
 
 from find_database_engine import find_engine
@@ -14,7 +13,7 @@ def find_rds_instance_cost(obj):
     """
     Function to get RDS instance cost.
     Receive 1 Terraform plan JSON object as parameter.
-    Return instanceType, multi_az, unit, monthly_rds_instance_price
+    Return instance_type, database_engine, deployment_option, rds_instance_unit, monthly_rds_instance_cost
     """
 
     pricing = boto3.client('pricing', region_name='us-east-1')
@@ -40,18 +39,17 @@ def find_rds_instance_cost(obj):
         MaxResults=1
     )
 
-    unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
+    rds_instance_unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
     hourly_rds_instance_price = float(find_values_from_key('pricePerUnit', json.loads(response['PriceList'][0]))[0]['USD'])
-    monthly_rds_instance_price = hourly_rds_instance_price * 720
-    monthly_rds_instance_price = f'{monthly_rds_instance_price:.2f}'
-    return instance_type, database_engine, deployment_option, unit, monthly_rds_instance_price
+    monthly_rds_instance_cost = f'{hourly_rds_instance_price * 720:.2f}'
+    return instance_type, database_engine, deployment_option, rds_instance_unit, monthly_rds_instance_cost
 
 
 def find_rds_storage_cost(obj):
     """
     Function to get RDS storage cost.
     Receive 1 Terraform plan JSON object as parameter.
-    Return allocated_storage, multi_az, unit, monthly_rds_storage_price
+    Return volume_type, volume_api_name, deployment_option, allocated_storage, rds_storage_unit, monthly_rds_storage_cost
     """
 
     pricing = boto3.client('pricing', region_name='us-east-1')
@@ -76,30 +74,31 @@ def find_rds_storage_cost(obj):
     )
 
     volume_type = find_values_from_key('volumeType', json.loads(response['PriceList'][0]))[0]
-    unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
-    storage_price_per_month = float(find_values_from_key('pricePerUnit', json.loads(response['PriceList'][0]))[0]['USD']) * allocated_storage
-    storage_price_per_month = f'{storage_price_per_month:.2f}'
-    return volume_type, volume_api_name, deployment_option, allocated_storage, unit, storage_price_per_month
+    rds_storage_unit = find_values_from_key('unit', json.loads(response['PriceList'][0]))[0]
+    monthly_rds_storage_cost = float(find_values_from_key('pricePerUnit', json.loads(response['PriceList'][0]))[0]['USD']) * allocated_storage
+    monthly_rds_storage_cost = f'{monthly_rds_storage_cost:.2f}'
+    return volume_type, volume_api_name, deployment_option, allocated_storage, rds_storage_unit, monthly_rds_storage_cost
 
+def calculate_rds(address_param, file_obj):
+    """
+    Calculate RDS instance cost, RDSstorage cost, and then write to data.csv
+    """
+    address = find_values_containing_substring("address", address_param, file_obj)[0]
+    instance_type, database_engine, deployment_option, rds_instance_unit, monthly_rds_instance_cost = find_rds_instance_cost(file_obj)
+    volume_type, volume_api_name, deployment_option, allocated_storage, rds_storage_unit, monthly_rds_storage_cost = find_rds_storage_cost(file_obj)
 
-# Open xxxxxx-postgres-plan.json file and create obj dictionary
-with open(sys.argv[1], encoding="utf-8") as file:
-    file_obj = json.load(file)
+    fields = [
+        [' ', ' ', ' ', ' '],
+        [address, ' ', ' ', ' '],
+        [f'├── Database instance ({instance_type}, {database_engine}, {deployment_option})',
+                720, f'{rds_instance_unit}', f'${monthly_rds_instance_cost}'],
+        [f'└── Storage ({volume_type}, {volume_api_name}, {deployment_option})',
+                f'{allocated_storage}', f'{rds_storage_unit}', f'${monthly_rds_storage_cost}']   
+    ]
 
-address = find_values_containing_substring("address", ".aws_db_instance.", file_obj)[0]
-rds_instance_cost = find_rds_instance_cost(file_obj)
-rds_storage_cost = find_rds_storage_cost(file_obj)
+    with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as file:
+        writer = csv.writer(file)
+        for field in fields:
+            writer.writerow(field)
 
-fields_1 = [' ', ' ', ' ', ' ']
-fields_2 = [address, ' ', ' ', ' ']
-fields_3 = [f'├── Database instance ({rds_instance_cost[0]}, {rds_instance_cost[1]}, {rds_instance_cost[2]})',
-            720, f'{rds_instance_cost[3]}', f'${rds_instance_cost[4]}']
-fields_4 = [f'└── Storage ({rds_storage_cost[0]}, {rds_storage_cost[1]}, {rds_storage_cost[2]})',
-            f'{rds_storage_cost[3]}', f'{rds_storage_cost[4]}', f'${rds_storage_cost[5]}']
-
-with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as f:
-    writer = csv.writer(f)
-    writer.writerow(fields_1)
-    writer.writerow(fields_2)
-    writer.writerow(fields_3)
-    writer.writerow(fields_4)
+    return float(monthly_rds_instance_cost) + float(monthly_rds_storage_cost)

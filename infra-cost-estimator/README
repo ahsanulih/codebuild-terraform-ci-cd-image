@@ -7,21 +7,20 @@ The parsed JSON can be used as payload to get infra cost from AWS pricing API <b
 The purpose of this tool is to make engineer aware of the cost when provisioning infra.
 
 Goals: 
-- [x] Get stack module’s ASG cost from abcxyz-app folder
-- [x] Get stack module’s EBS cost 
-- [x] Get stack module's ALB and LCU cost
-- [x] Get stack module's CloudWatch log group cost 
-- [x] Get RDS instance cost from abcxyz-postgres folder
+- [x] Get EC2 cost
+- [x] Get ASG cost
+- [x] Get EBS cost 
+- [x] Get ALB and LCU cost
+- [x] Get CloudWatch log group cost 
+- [x] Get RDS instance cost
 - [x] Get RDS storage cost 
 - [x] Integrate with Terraform CI-CD
-- [ ] Get SQS cost
+- [x] Get SQS cost
+- [ ] Get S3 cost
+- [x] Display summary containing detected resources
 - [ ] to be continued..
 
 ## How to use
-#### Local use
-- Copy `infra_cost.sh`, `data/`, and `scripts/` to a terraform directory
-- Change directory to that terraform directory
-- Execute `./infra_cost.sh`
 #### Integration with Terraform CI CD
 - Build docker image and push to ECR repository
 - Make sure Terraform CI CD Codebuild use that image
