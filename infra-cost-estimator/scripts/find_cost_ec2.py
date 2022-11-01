@@ -61,8 +61,14 @@ def find_ebs_cost(obj):
     pricing = boto3.client('pricing', region_name='us-east-1')
 
     region_id = find_region(obj)
-    volume_api_name = find_values_from_key('volume_type', obj)[0]
-    volume_size = find_values_from_key('volume_size', obj)[0]
+    try:
+        volume_api_name = find_values_from_key('volume_type', obj)[0]
+    except:
+        volume_api_name = "gp3"
+    try:
+        volume_size = find_values_from_key('volume_size', obj)[0]
+    except:
+        volume_size = 8
 
     response = pricing.get_products(
         ServiceCode='AmazonEC2',

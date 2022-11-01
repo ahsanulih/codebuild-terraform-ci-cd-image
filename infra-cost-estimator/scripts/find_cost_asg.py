@@ -67,8 +67,14 @@ def find_ebs_cost(obj):
     pricing = boto3.client('pricing', region_name='us-east-1')
 
     region_id = find_region(obj)
-    volume_api_name = find_values_from_key('volume_type', obj)[0]
-    volume_size = find_values_from_key('volume_size', obj)[0]
+    try:
+        volume_api_name = find_values_from_key('volume_type', obj)[0]
+    except:
+        volume_api_name = "gp3"
+    try:
+        volume_size = find_values_from_key('volume_size', obj)[0]
+    except:
+        volume_size = 8
 
     response = pricing.get_products(
         ServiceCode='AmazonEC2',
@@ -98,7 +104,7 @@ def calculate_asg_and_ebs(address_param, file_obj):
     fields = [
         [' ', ' ', ' ', ' '],
         [address, ' ', ' ', ' '],
-        [f'├── Instance usage ({operating_system}, {market_option}, {instance_type})', 720, f'{asg_unit}', f'${range_price_per_month}'],
+        [f'├── Instance usage ({operating_system}, {market_option}, {instance_type}, max {asg_max_size} instance)', 720, f'{asg_unit}', f'${upper_bound}'],
         [f'└── Storage ({volume_type}, {volume_api_name})', f'{volume_size}', f'{ebs_unit}', f'${monthly_ebs_price}']
     ]
 

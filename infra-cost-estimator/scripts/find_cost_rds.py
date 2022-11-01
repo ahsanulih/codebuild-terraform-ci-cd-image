@@ -93,7 +93,7 @@ def calculate_rds(address_param, file_obj):
         [f'├── Database instance ({instance_type}, {database_engine}, {deployment_option})',
                 720, f'{rds_instance_unit}', f'${monthly_rds_instance_cost}'],
         [f'└── Storage ({volume_type}, {volume_api_name}, {deployment_option})',
-                f'{allocated_storage}', f'{rds_storage_unit}', f'${monthly_rds_storage_cost}']   
+                f'{allocated_storage}', f'{rds_storage_unit}', f'${monthly_rds_storage_cost}']
     ]
 
     with open(r'/usr/local/bin/infra-cost-estimator/data/data.csv', 'a', encoding="utf-8") as file:

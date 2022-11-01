@@ -7,7 +7,8 @@ from find_cost_asg import calculate_asg_and_ebs
 from find_cost_cw_log_group import calculate_cwl
 from find_cost_ec2 import calculate_ec2_and_ebs
 from find_cost_rds import calculate_rds
-# from find_cost_sqs import calculate_sqs
+from find_cost_sqs import calculate_sqs
+from find_cost_s3 import calculate_s3
 from find_values import find_values_from_key
 
 class InfracostEstimator(object):
@@ -22,10 +23,15 @@ class InfracostEstimator(object):
             "aws_db_instance",
             "aws_instance",
             "aws_autoscaling_group",
+            # "aws_s3_bucket",
+            "aws_sqs_queue"
         }
         self.free_resource_hashmap = {
+            "aws_acm_certificate": 0,
+            "aws_acm_certificate_validation": 0,
             "aws_cloudwatch_event_rule": 0,
             "aws_cloudwatch_event_target": 0,
+            "aws_codebuild_webhook": 0,
             "aws_db_parameter_group": 0,
             "aws_eip": 0,
             "aws_iam_instance_profile": 0,
@@ -36,7 +42,10 @@ class InfracostEstimator(object):
             "aws_lambda_permission": 0,
             "aws_launch_template": 0,
             "aws_lb_listener": 0,
+            "aws_lb_listener_rule": 0,
             "aws_lb_target_group": 0,
+            "aws_lb_target_group_attachment": 0,
+            "aws_s3_bucket_public_access_block": 0,
             "aws_security_group": 0,
             "aws_security_group_rule": 0,
             "aws_ssm_parameter": 0,
@@ -63,6 +72,13 @@ class InfracostEstimator(object):
         if tf_resource["type"] == "aws_lb":
             self.not_free_resource_counter += 1
             self.total_cost += calculate_alb_and_lcu(tf_resource["address"], tf_plan)
+        if tf_resource["type"] == "aws_s3_bucket":
+            self.not_free_resource_counter += 1
+            self.total_cost += calculate_s3(tf_resource["address"], tf_plan)
+        if tf_resource["type"] == "aws_sqs_queue":
+            self.not_free_resource_counter += 1
+            self.total_cost += calculate_sqs(tf_resource["address"], tf_plan)
+        
 
     def main(self, tf_plan_file):
         with open(f"{tf_plan_file}", encoding="utf-8") as file:
@@ -72,7 +88,7 @@ class InfracostEstimator(object):
             root_module_resources_obj = tf_plan_obj["planned_values"]["root_module"]["resources"]
         except:
             root_module_resources_obj = {}
-
+            
         try:
             child_module_resources_obj = tf_plan_obj["planned_values"]["root_module"]["child_modules"]
         except:
