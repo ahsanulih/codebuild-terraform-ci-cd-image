@@ -21,4 +21,3 @@ if [ "$TF_WORKING_DIR" != "" ]; then
     cat aws-resource-charges-estimations
     cd -
 fi
-

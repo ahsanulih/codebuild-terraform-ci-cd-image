@@ -34,30 +34,13 @@ with cwd(os.getenv('TF_WORKING_DIR')):
 f = open("artifact/metadata.json", "r")
 metadata = f.read()
 
-if not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/aws-resource-charges-estimations"):
-    print("aws-resource-charges-estimations not found. Skipping this step")
-    template = Environment(
-        loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
-    ).get_template("terraform_output.j2")
-    message = template.render(
-        metadata_json=metadata,
-        file_name="terraform.tfplan",
-        terraform_output=tf_plan,
-    )
-else:
-    with cwd(os.getenv('TF_WORKING_DIR')):
-        command_infracost = os.popen('cat aws-resource-charges-estimations')
-        aws_resource_charges_estimations = command_infracost.read()
-        command.close()
-    template = Environment(
-        loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
-    ).get_template("terraform_output_with_infra_cost.j2")
-    message = template.render(
-        metadata_json=metadata,
-        file_name="terraform.tfplan",
-        infra_cost_file_name="aws-resource-charges-estimations",
-        terraform_output=tf_plan,
-        infra_cost_output=aws_resource_charges_estimations
-    )
+template = Environment(
+    loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
+).get_template("terraform_output.j2")
+message = template.render(
+    metadata_json=metadata,
+    file_name="terraform.tfplan",
+    terraform_output=tf_plan
+)
 
 gh.send_pr_comment(payload=message)
