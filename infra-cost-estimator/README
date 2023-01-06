@@ -1,0 +1,26 @@
+# Infra cost estimation tool
+
+## Explanation
+Terraform plan can be exported to JSON file and parsed using python script. <br />
+https://www.terraform.io/internals/json-format#plan-representation <br />
+The parsed JSON can be used as payload to get infra cost from AWS pricing API <br />
+The purpose of this tool is to make engineer aware of the cost when provisioning infra.
+
+Goals: 
+- [x] Get EC2 cost
+- [x] Get ASG cost
+- [x] Get EBS cost 
+- [x] Get ALB and LCU cost
+- [x] Get CloudWatch log group cost 
+- [x] Get RDS instance cost
+- [x] Get RDS storage cost 
+- [x] Integrate with Terraform CI-CD
+- [x] Get SQS cost
+- [ ] Get S3 cost
+- [x] Display summary containing detected resources
+- [ ] to be continued..
+
+## How to use
+#### Integration with Terraform CI CD
+- Build docker image and push to ECR repository
+- Make sure Terraform CI CD Codebuild use that image
