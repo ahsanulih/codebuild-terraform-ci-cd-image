@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/cache/* && \
     apt-get clean && \
     apt-get autoremove --purge
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
 RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN git clone -b v2.2.2 https://github.com/tfutils/tfenv.git ~/.tfenv && \
@@ -32,7 +34,10 @@ RUN python3 -m pip install --upgrade pip && \
 RUN tfenv install 0.11.15 &&\
     tfenv install 0.12.31 &&\
     tfenv install 0.13.7 &&\
-    tfenv install 1.0.3 &&\
+    tfenv install 1.0.11 &&\
+    tfenv install 1.1.9 &&\
+    tfenv install 1.2.9 &&\
+    tfenv install 1.3.7 &&\
     tfenv use 0.11.15
 
 # https://www.docker.com/blog/docker-can-now-run-within-docker/

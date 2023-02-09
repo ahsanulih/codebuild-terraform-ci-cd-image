@@ -16,7 +16,11 @@ echo "Working dir : $TF_WORKING_DIR"
 mkdir -p artifact
 if [ "$TF_WORKING_DIR" != "" ]; then
     cd $TF_WORKING_DIR
-    terraform init -no-color 2> /tmp/errMsg.log
+    if [[ $(terraform version | head -n 1 | grep -Eo "[.0-9]+") =~ ^1\..* ]]; then
+      terraform init -no-color -lockfile=readonly 2> /tmp/errMsg.log
+    else
+      terraform init -no-color 2> /tmp/errMsg.log
+    fi
     terraform plan -out=terraform.tfplan -no-color 2> /tmp/errMsg.log
     cd -
 fi
