@@ -1,0 +1,4 @@
+certifi >= 2022.9
+checkov >= 2.0
+click >= 8.0
+tabulate >= 0.8

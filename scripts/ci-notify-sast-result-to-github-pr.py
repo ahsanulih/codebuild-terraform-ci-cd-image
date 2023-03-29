@@ -34,21 +34,29 @@ with cwd(os.getenv('TF_WORKING_DIR')):
 f = open("artifact/metadata.json", "r")
 metadata = f.read()
 
-if not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/sast-result"):
-    print("sast-result not found. Skipping this step")
+if not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/sast-result-summary"):
+    print("sast-result-summary not found. Skipping this step")
+elif not os.path.isfile(os.getenv('TF_WORKING_DIR', "")+"/sast-result-detail"):
+    print("sast-result-detail not found. Skipping this step")
 else:
     with cwd(os.getenv('TF_WORKING_DIR')):
-        command_sast_result = os.popen('cat sast-result')
-        aws_resource_charges_estimations = command_sast_result.read()
-        command.close()
+        command_sast_result_summary = os.popen('cat sast-result-summary')
+        sast_result_summary = command_sast_result_summary.read()
+        command_sast_result_summary.close()
+        
+        command_sast_result_detail = os.popen('cat sast-result-detail')
+        sast_result_detail = command_sast_result_detail.read()
+        command_sast_result_detail.close()
     template = Environment(
         loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
-    ).get_template("terraform_output_with_infra_sast.j2")
+    ).get_template("terraform_output_with_sast.j2")
     message = template.render(
         metadata_json=metadata,
         file_name="terraform.tfplan",
-        sast_result_file_name="sast-result",
+        sast_result_summary_file_name="sast-result-summary",
+        sast_result_summary_output=sast_result_summary,
         terraform_output=tf_plan,
-        sast_result_output=aws_resource_charges_estimations
+        sast_result_detail_file_name="sast-result-detail",
+        sast_result_detail_output=sast_result_detail
     )
     gh.send_pr_comment(payload=message)
