@@ -5,6 +5,9 @@ result=${result:-/} # to correct for the case where PWD=/
 echo "checkov --version"
 checkov --version
 
+echo "# SUMMARY"
+python3 checkov/failed_summarizer.py -d $(pwd) >>sast-result-summary
+
 echo "Working dir : $TF_WORKING_DIR"
 if [ "$TF_WORKING_DIR" != "" ]; then
     cd $TF_WORKING_DIR
@@ -15,17 +18,13 @@ if [ "$TF_WORKING_DIR" != "" ]; then
     fi
 fi
 
-echo "# SUMMARY"
-cmd="python checkov/failed_summarizer.py -d ."
 echo "# DETAIL"
-cmd="checkov -d."
-
-checkov -f "$result"-plan.json >>sast-result
+checkov -f "$result"-plan.json >>sast-result-detail
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed static app security test using Checkov"
     exit 0
 else
-    echo -e "\nCould not execute static app security test using Checkov" >&2
+    echo -e "\nThere were some failed checks during static app security test using Checkov" >&2
     exit 0
 fi
