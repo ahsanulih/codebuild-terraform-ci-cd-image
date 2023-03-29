@@ -1,11 +1,11 @@
-#!/bin/bash -x
+#!/bin/bash
 result=${PWD##*/}   # to assign current directory name to a variable
 result=${result:-/} # to correct for the case where PWD=/
 
 echo "checkov --version"
 checkov --version
 
-echo "# SUMMARY"
+echo "#EXECUTING CHECKOV SUMMARIZED TEST"
 python3 checkov/failed_summarizer.py -d $(pwd) >>sast-result-summary
 
 echo "Working dir : $TF_WORKING_DIR"
@@ -18,7 +18,7 @@ if [ "$TF_WORKING_DIR" != "" ]; then
     fi
 fi
 
-echo "# DETAIL"
+echo "#EXECUTING CHECKOV DETAILED TEST"
 checkov -f "$result"-plan.json >>sast-result-detail
 
 if [ $? -eq 0 ]; then
