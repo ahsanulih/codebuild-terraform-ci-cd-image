@@ -10,11 +10,11 @@ Failed check_id sorted from the biggest count
 2. Run the script
     - From current directory
         ```
-        python failed_summarizer.py -d gcp/data/din/tvlk-data-domoconn-prod -d gcp/data/din/tvlk-data-noc-dev
+        python failed_summarizer.py -d .
         ```
      - From base repo directory
         ```
-        python scripts/security/checkov/failed_summarizer.py -d gcp/data/din --base-dir $PWD
+        python scripts/security/checkov/failed_summarizer.py -d . --base-dir $PWD
         ```
 
 ## Options
