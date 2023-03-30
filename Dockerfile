@@ -46,4 +46,4 @@ VOLUME /var/lib/docker
 
 COPY scripts/ /usr/local/bin/
 COPY infra-cost-estimator/ /usr/local/bin/infra-cost-estimator/
-COPY checkov/ /usr/local/bin/checkov/
+COPY checkov-scripts/ /usr/local/bin/checkov-scripts/
