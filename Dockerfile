@@ -28,6 +28,7 @@ RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install --no-cache-dir Jinja2 && \
     python3 -m pip install --no-cache-dir pandas && \
     python3 -m pip install --no-cache-dir tabulate && \
+    python3 -m pip install --no-cache-dir checkov && \
     python3 -m pip cache purge
 RUN tfenv install 0.11.15 &&\
     tfenv install 0.12.31 &&\
@@ -40,3 +41,4 @@ VOLUME /var/lib/docker
 
 COPY scripts/ /usr/local/bin/
 COPY infra-cost-estimator/ /usr/local/bin/infra-cost-estimator/
+COPY checkov-scripts/ /usr/local/bin/checkov-scripts/
