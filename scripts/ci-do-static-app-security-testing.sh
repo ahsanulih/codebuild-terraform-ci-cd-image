@@ -6,7 +6,7 @@ echo "checkov --version"
 checkov --version
 
 echo "#EXECUTING CHECKOV SUMMARIZED TEST"
-python3 checkov-scripts/failed_summarizer.py -d $(pwd) >>sast-result-summary
+python3 /usr/local/bin/checkov-scripts/failed_summarizer.py -d $(pwd) >>sast-result-summary
 
 echo "Working dir : $TF_WORKING_DIR"
 if [ "$TF_WORKING_DIR" != "" ]; then
