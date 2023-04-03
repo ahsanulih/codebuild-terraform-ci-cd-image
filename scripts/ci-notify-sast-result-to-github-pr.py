@@ -60,4 +60,3 @@ else:
         sast_result_detail_output=sast_result_detail
     )
     gh.send_pr_comment(payload=message)
-    
