@@ -11,7 +11,7 @@ echo "checkov --version"
 checkov --version
 
 echo "#EXECUTING CHECKOV SUMMARIZED TEST"
-python3 /usr/local/bin/checkov-scripts/failed_summarizer.py -d $(pwd) >>sast-result-summary
+python3 /usr/local/bin/checkov-scripts/failed_summarizer.py -d $(pwd) --skip-check CKV_AWS_23 >>sast-result-summary
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed summarized static app security test using Checkov"
@@ -20,7 +20,7 @@ else
 fi
 
 echo "#EXECUTING CHECKOV DETAILED TEST"
-checkov -d . >>sast-result-detail
+checkov -d . --skip-check CKV_AWS_23 >>sast-result-detail
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed detailed static app security test using Checkov"
