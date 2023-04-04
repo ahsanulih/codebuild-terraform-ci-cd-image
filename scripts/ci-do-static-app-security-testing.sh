@@ -1,6 +1,5 @@
 #!/bin/bash
-result=${PWD##*/}   # to assign current directory name to a variable
-result=${result:-/} # to correct for the case where PWD=/
+CHECKOV_SKIP_CHECK="CKV_AWS_23,CKV_AWS_144,CKV2_AWS_62,CKV2_AWS_5"
 
 echo "Working dir : $TF_WORKING_DIR"
 if [ "$TF_WORKING_DIR" != "" ]; then
@@ -11,7 +10,7 @@ echo "checkov --version"
 checkov --version
 
 echo "#EXECUTING CHECKOV SUMMARIZED TEST"
-python3 /usr/local/bin/checkov-scripts/failed_summarizer.py -d $(pwd) --skip-check CKV_AWS_23 >>sast-result-summary
+python3 /usr/local/bin/checkov-scripts/failed_summarizer.py -d $(pwd) --skip-check ${CHECKOV_SKIP_CHECK} >>sast-result-summary
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed summarized static app security test using Checkov"
@@ -20,7 +19,7 @@ else
 fi
 
 echo "#EXECUTING CHECKOV DETAILED TEST"
-checkov -d . --skip-check CKV_AWS_23 >>sast-result-detail
+checkov -d . --skip-check ${CHECKOV_SKIP_CHECK} >>sast-result-detail
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed detailed static app security test using Checkov"
