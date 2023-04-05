@@ -91,7 +91,7 @@ def create_failed_summary_single_directory(
             stats.append({
                 "Check": k,
                 "Description": passed_counter[k]["description"],
-                "Status": "Pass",
+                "Status": "Passed",
                 "Count": passed_counter[k]["count"]
             })
 
