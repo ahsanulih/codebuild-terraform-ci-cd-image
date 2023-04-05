@@ -45,33 +45,61 @@ def create_failed_summary_single_directory(
 
     result = {}
     for s in stdout:
-        counter = {}
+        passed_counter = {}
+        failed_counter = {}
         stats = []
+                
         for f in s["results"]["failed_checks"]:
             cid = f["check_id"]
-            if counter.get(cid) == None:
-                counter[cid] = {}
-                counter[cid]["description"] = f["check_name"]
-                counter[cid]["count"] = 1
+            if failed_counter.get(cid) == None:
+                failed_counter[cid] = {}
+                failed_counter[cid]["description"] = f["check_name"]
+                failed_counter[cid]["count"] = 1
             else:
-                counter[cid]["count"] += 1
+                failed_counter[cid]["count"] += 1
 
-        sorted_keys = sorted(
-            counter.keys(),
-            key=lambda x:counter[x]["count"],
+        failed_sorted_keys = sorted(
+            failed_counter.keys(),
+            key=lambda x:failed_counter[x]["count"],
             reverse=True
         )  # sort by the biggest count
-        for k in sorted_keys:
+        
+        for k in failed_sorted_keys:
             stats.append({
-                "check_id": k,
-                "description": counter[k]["description"],
-                "count": counter[k]["count"]
+                "Check": k,
+                "Description": failed_counter[k]["description"],
+                "Status": "Failed",
+                "Count": failed_counter[k]["count"]
+            })
+            
+        for f in s["results"]["passed_checks"]:
+            cid = f["check_id"]
+            if passed_counter.get(cid) == None:
+                passed_counter[cid] = {}
+                passed_counter[cid]["description"] = f["check_name"]
+                passed_counter[cid]["count"] = 1
+            else:
+                passed_counter[cid]["count"] += 1
+        
+        passed_sorted_keys = sorted(
+            passed_counter.keys(),
+            key=lambda x:passed_counter[x]["count"],
+            reverse=True
+        )  # sort by the biggest count
+        
+        for k in passed_sorted_keys:
+            stats.append({
+                "Check": k,
+                "Description": passed_counter[k]["description"],
+                "Status": "Pass",
+                "Count": passed_counter[k]["count"]
             })
 
         check_type = s.get("check_type", "terraform")
         result[check_type] = {
             "path": target_dir,
             "statistic": stats,
+            "total_passed": s["summary"]["passed"],
             "total_failed": s["summary"]["failed"],
             "total_parsing_error": s["summary"]["parsing_errors"],
             "checkov_version": s["summary"]["checkov_version"]
@@ -85,12 +113,13 @@ def pretty_print(failed_summary:list, format_type:str=json) -> None:
         print(json.dumps(failed_summary, indent=4))
     elif format_type == "text":
         temp = failed_summary[0]
-        print(f"Checkov Version: {temp[next(iter(temp))]['checkov_version']}")  # sampling from #1 element
-        print(f"Checkov Policies: https://www.checkov.io/5.Policy%20Index/terraform.html")
+        print(f"Checkov Version  : {temp[next(iter(temp))]['checkov_version']}")  # sampling from #1 element
+        print(f"Checkov Policies : https://www.checkov.io/5.Policy%20Index/terraform.html")
         for fs in failed_summary:
             for k in fs.keys():
                 print(f"\nCheck Type   : {k}")
                 print(f"Path         : {fs[k]['path']}")
+                print(f"Total Passed : {fs[k]['total_passed']}")
                 print(f"Total Failed : {fs[k]['total_failed']}")
                 if fs[k].get("statistic"):
                     print("Statistic    :")

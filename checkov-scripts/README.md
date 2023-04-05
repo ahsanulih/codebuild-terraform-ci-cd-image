@@ -10,15 +10,15 @@ Failed check_id sorted from the biggest count
 2. Run the script
     - From current directory
         ```
-        python failed_summarizer.py -d .
+        python summarizer.py -d .
         ```
      - From base repo directory
         ```
-        python scripts/security/checkov/failed_summarizer.py -d . --base-dir $PWD
+        python scripts/security/checkov/summarizer.py -d . --base-dir $PWD
         ```
 
 ## Options
-See `python failed_summarizer --help`
+See `python summarizer --help`
 | Name            | Description                                         | Note                                                       |
 | --------------- | --------------------------------------------------- | ---------------------------------------------------------- |
 | --directory, -d | Target directory to check, can use multiple options | e.g. `.. -d <dir1> -d <dir2> ..`                           |
