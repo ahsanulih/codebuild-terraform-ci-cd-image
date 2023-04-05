@@ -53,10 +53,10 @@ else:
     message = template.render(
         metadata_json=metadata,
         file_name="terraform.tfplan",
-        sast_result_summary_file_name="sast-result-summary",
+        sast_result_summary_file_name="Summary",
         sast_result_summary_output=sast_result_summary,
         terraform_output=tf_plan,
-        sast_result_detail_file_name="sast-result-detail",
+        sast_result_detail_file_name="Details",
         sast_result_detail_output=sast_result_detail
     )
     gh.send_pr_comment(payload=message)
