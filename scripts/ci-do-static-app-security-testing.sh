@@ -19,7 +19,7 @@ else
 fi
 
 echo "#EXECUTING CHECKOV DETAILED TEST"
-checkov -d . --skip-check ${CHECKOV_SKIP_CHECK} >>sast-result-detail
+checkov -d . --skip-check ${CHECKOV_SKIP_CHECK} --quiet >>sast-result-detail
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed detailed static app security test using Checkov"

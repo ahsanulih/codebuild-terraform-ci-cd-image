@@ -86,6 +86,7 @@ def pretty_print(failed_summary:list, format_type:str=json) -> None:
     elif format_type == "text":
         temp = failed_summary[0]
         print(f"Checkov Version: {temp[next(iter(temp))]['checkov_version']}")  # sampling from #1 element
+        print(f"Checkov Policies: https://www.checkov.io/5.Policy%20Index/terraform.html")
         for fs in failed_summary:
             for k in fs.keys():
                 print(f"\nCheck Type   : {k}")
