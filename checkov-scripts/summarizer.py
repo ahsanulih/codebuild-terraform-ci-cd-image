@@ -117,12 +117,12 @@ def pretty_print(failed_summary:list, format_type:str=json) -> None:
         print(f"Checkov Policies : https://www.checkov.io/5.Policy%20Index/terraform.html")
         for fs in failed_summary:
             for k in fs.keys():
-                print(f"\nCheck Type   : {k}")
-                print(f"Path         : {fs[k]['path']}")
-                print(f"Total Passed : {fs[k]['total_passed']}")
-                print(f"Total Failed : {fs[k]['total_failed']}")
+                print(f"\nCheck Type   : `{k}`")
+                # print(f"Path         : {fs[k]['path']}")
+                print(f":white_check_mark: Passed  : {fs[k]['total_passed']}")
+                print(f":x: Failed : {fs[k]['total_failed']}")
                 if fs[k].get("statistic"):
-                    print("Statistic    :")
+                    print(" ")
                     print(
                         tabulate(
                             [x.values() for x in fs[k]["statistic"]],
