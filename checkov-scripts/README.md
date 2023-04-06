@@ -1,6 +1,6 @@
-# Checkov failed check summarizer script
+# Checkov check summarizer script
 
-Failed check_id sorted from the biggest count
+Checkov check summary sorted from the biggest count
 
 ## Usage
 1. Install the dependencies
@@ -8,14 +8,9 @@ Failed check_id sorted from the biggest count
     pip install -r requirements.txt
     ```
 2. Run the script
-    - From current directory
-        ```
-        python summarizer.py -d .
-        ```
-     - From base repo directory
-        ```
-        python scripts/security/checkov/summarizer.py -d . --base-dir $PWD
-        ```
+    ```
+    python summarizer.py -d .
+    ```
 
 ## Options
 See `python summarizer --help`
