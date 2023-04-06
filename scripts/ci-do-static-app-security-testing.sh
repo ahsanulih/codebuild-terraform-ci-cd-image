@@ -10,7 +10,7 @@ echo "checkov --version"
 checkov --version
 
 echo "#EXECUTING CHECKOV SUMMARIZED TEST"
-python3 /usr/local/bin/checkov-scripts/summarizer.py -d $(pwd) --skip-check ${CHECKOV_SKIP_CHECK} >>sast-result-summary
+python3 /usr/local/bin/checkov-scripts/summarizer.py -d $(pwd) --skip-check ${CHECKOV_SKIP_CHECK} >sast-result-summary
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed summarized static app security test using Checkov"
@@ -19,7 +19,8 @@ else
 fi
 
 echo "#EXECUTING CHECKOV DETAILED TEST"
-checkov -d . --skip-check ${CHECKOV_SKIP_CHECK} --quiet >>sast-result-detail
+checkov -d . --skip-check ${CHECKOV_SKIP_CHECK} --quiet >sast-result-detail
+checkov -d . --skip-check ${CHECKOV_SKIP_CHECK} --quiet -o json >sast-result-detail.json
 
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully executed detailed static app security test using Checkov"

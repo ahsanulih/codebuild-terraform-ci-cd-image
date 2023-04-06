@@ -119,8 +119,14 @@ def pretty_print(failed_summary:list, format_type:str=json) -> None:
             for k in fs.keys():
                 print(f"\nCheck Type   : `{k}`")
                 # print(f"Path         : {fs[k]['path']}")
-                print(f":white_check_mark: Passed  : {fs[k]['total_passed']}")
-                print(f":x: Failed : {fs[k]['total_failed']}")
+                try:
+                    print(f":white_check_mark: Passed  : {fs[k]['total_passed']}")
+                except:
+                    print(f":white_check_mark: Passed  : 0")
+                try:
+                    print(f":x: Failed : {fs[k]['total_failed']}")
+                except: 
+                    print(f":x: Failed : 0")
                 if fs[k].get("statistic"):
                     print(" ")
                     print(
