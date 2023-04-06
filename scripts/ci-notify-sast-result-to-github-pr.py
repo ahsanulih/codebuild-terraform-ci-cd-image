@@ -3,7 +3,6 @@
 
 import os
 import sys
-import json
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -49,11 +48,8 @@ else:
         sast_result_detail = command_sast_result_detail.read()
         command_sast_result_detail.close()
         
-        sast_result_detail_json = open('sast-result-detail.json')
-        data = json.load(sast_result_detail_json)
-        if (data["summary"]["passed"] == 0 and data["summary"]["failed"] == 0):
+        if (os.stat('sast-result-detail').st_size == 1):
             sast_result_detail = "No Checkov policies applicable to Terraform resources in this directory"
-        sast_result_detail_json.close()
         
     template = Environment(
         loader=FileSystemLoader(os.path.dirname(os.path.realpath(__file__)) + "/templates")
